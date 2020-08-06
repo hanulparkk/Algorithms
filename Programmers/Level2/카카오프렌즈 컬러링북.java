@@ -1,0 +1,94 @@
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+
+        Solution solution = new Solution();
+
+        int m = 6;
+        int n = 4;
+        int[][] picture = {{1, 1, 1, 0}, {1, 2, 2, 0}, {1, 0, 0, 1}, {0, 0, 0, 1}, {0, 0, 0, 3}, {0, 0, 0, 3}};
+
+        int[] answer = solution.solution(m, n, picture);
+
+        System.out.println(Arrays.toString(answer));
+
+    }
+}
+
+//First Solution: BFS
+class Pair {
+    int x;
+    int y;
+    public Pair(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    public int getX() {
+        return x;
+    }
+    public int getY() {
+        return y;
+    }
+}
+
+class Solution {
+    static int[][] map;
+    static boolean[][] visit;
+    static Queue<Pair> queue;
+
+    static final int[] dx = {-1, 1, 0, 0};
+    static final int[] dy = {0, 0, -1, 1};
+
+    public int[] solution(int m, int n, int[][] picture) {
+        map = picture.clone();
+        visit = new boolean[m][n];
+        queue = new LinkedList<>();
+
+        int numberOfArea = 0;
+        int maxSizeOfOneArea = 0;
+
+        for (int x = 0; x < m; x++) {
+            for (int y = 0; y < n; y++) {
+                if (map[x][y] != 0 && visit[x][y] == false) {
+                    numberOfArea++;
+                    int sizeOfOneArea = BFS(x, y);
+                    maxSizeOfOneArea = maxSizeOfOneArea < sizeOfOneArea ? sizeOfOneArea : maxSizeOfOneArea;
+                }
+            }
+        }
+
+        int[] answer = new int[2];
+        answer[0] = numberOfArea;
+        answer[1] = maxSizeOfOneArea;
+        return answer;
+    }
+
+    public int BFS(int x, int y) {
+        int sizeOfOneArea = 0;
+        int color = map[x][y];
+
+        queue.offer(new Pair(x, y));
+        visit[x][y] = true;
+        sizeOfOneArea++;
+
+        while (!queue.isEmpty()) {
+            Pair loc = queue.poll();
+
+            for (int i = 0; i < 4; i++) {
+                int srchX = loc.getX() + dx[i];
+                int srchY = loc.getY() + dy[i];
+
+                if (srchX > -1 && srchY > -1 && srchX < map.length && srchY < map[srchX].length && visit[srchX][srchY] == false) {
+                    if (map[srchX][srchY] == color) {
+                        queue.offer(new Pair(srchX, srchY));
+                        visit[srchX][srchY] = true;
+                        sizeOfOneArea++;
+                    }
+                }
+            }
+        }
+
+        return sizeOfOneArea;
+    }
+}
