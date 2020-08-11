@@ -16,26 +16,29 @@ class Main {
     }
 }
 
-//First Solution: BFS
-class Pair {
+/*class Pair {
     int x;
     int y;
+
     public Pair(int x, int y) {
         this.x = x;
         this.y = y;
     }
+
     public int getX() {
         return x;
     }
+
     public int getY() {
         return y;
     }
-}
+}*/
 
 class Solution {
     static int[][] map;
     static boolean[][] visit;
-    static Queue<Pair> queue;
+//    static Queue<Pair> queue;
+//    static Stack<Pair> stack;
 
     static final int[] dx = {-1, 1, 0, 0};
     static final int[] dy = {0, 0, -1, 1};
@@ -43,17 +46,20 @@ class Solution {
     public int[] solution(int m, int n, int[][] picture) {
         map = picture.clone();
         visit = new boolean[m][n];
-        queue = new LinkedList<>();
+//        queue = new LinkedList<>();
+//        stack = new Stack<>();
 
         int numberOfArea = 0;
         int maxSizeOfOneArea = 0;
 
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
-                if (map[x][y] != 0 && visit[x][y] == false) {
+                if (map[x][y] != 0 && !visit[x][y]) {
                     numberOfArea++;
-                    int sizeOfOneArea = BFS(x, y);
-                    maxSizeOfOneArea = maxSizeOfOneArea < sizeOfOneArea ? sizeOfOneArea : maxSizeOfOneArea;
+//                    int sizeOfOneArea = BFS(x, y);
+//                    int sizeOfOneArea = DFS(x, y);
+                    int sizeOfOneArea = Recursion(x, y);
+                    maxSizeOfOneArea = Math.max(maxSizeOfOneArea, sizeOfOneArea);
                 }
             }
         }
@@ -64,7 +70,8 @@ class Solution {
         return answer;
     }
 
-    public int BFS(int x, int y) {
+    //First Solution: BFS, Queue
+/*    public int BFS(int x, int y) {
         int sizeOfOneArea = 0;
         int color = map[x][y];
 
@@ -76,15 +83,66 @@ class Solution {
             Pair loc = queue.poll();
 
             for (int i = 0; i < 4; i++) {
-                int srchX = loc.getX() + dx[i];
+                int searchX = loc.getX() + dx[i];
                 int srchY = loc.getY() + dy[i];
 
-                if (srchX > -1 && srchY > -1 && srchX < map.length && srchY < map[srchX].length && visit[srchX][srchY] == false) {
-                    if (map[srchX][srchY] == color) {
-                        queue.offer(new Pair(srchX, srchY));
-                        visit[srchX][srchY] = true;
+                if (searchX > -1 && srchY > -1 && searchX < map.length && srchY < map[searchX].length && !visit[searchX][srchY]) {
+                    if (map[searchX][srchY] == color) {
+                        queue.offer(new Pair(searchX, srchY));
+                        visit[searchX][srchY] = true;
                         sizeOfOneArea++;
                     }
+                }
+            }
+        }
+
+        return sizeOfOneArea;
+    }*/
+
+    //Second Solution: DFS, Stack
+/*    public int DFS(int x, int y) {
+        int sizeOfOneArea = 0;
+        int color = map[x][y];
+
+        stack.push(new Pair(x, y));
+        visit[x][y] = true;
+        sizeOfOneArea++;
+
+        while (!stack.isEmpty()) {
+            Pair loc = stack.pop();
+
+            for (int i = 0; i < 4; i++) {
+                int searchX = loc.getX() + dx[i];
+                int srchY = loc.getY() + dy[i];
+
+                if (searchX > -1 && srchY > -1 && searchX < map.length && srchY < map[searchX].length && !visit[searchX][srchY]) {
+                    if (map[searchX][srchY] == color) {
+                        stack.push(new Pair(searchX, srchY));
+                        visit[searchX][srchY] = true;
+                        sizeOfOneArea++;
+                    }
+                }
+            }
+        }
+
+        return sizeOfOneArea;
+    }*/
+
+    //Third Solution: Recursion
+    public int Recursion(int x, int y) {
+        int sizeOfOneArea = 0;
+        int color = map[x][y];
+
+        visit[x][y] = true;
+        sizeOfOneArea++;
+
+        for (int i = 0; i < 4; i++) {
+            int searchX = x + dx[i];
+            int searchY = y + dy[i];
+
+            if (searchX > -1 && searchY > -1 && searchX < map.length && searchY < map[searchX].length && !visit[searchX][searchY]) {
+                if (map[searchX][searchY] == color) {
+                    sizeOfOneArea += Recursion(searchX, searchY);
                 }
             }
         }
