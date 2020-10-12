@@ -76,3 +76,48 @@ class Solution {
             return false;
     }
 }
+
+//Second Solution: Kruskal's algorithm (Improved)
+class Solution {
+
+    public static int[] parent;
+
+    public int findParent(int x) {
+        if (x == parent[x])
+            return x;
+
+        return parent[x] = findParent(parent[x]);
+    }
+
+    public void unionParent(int x, int y) {
+        x = findParent(x);
+        y = findParent(y);
+
+        if (x < y)
+            parent[y] = x;
+        else
+            parent[x] = y;
+    }
+
+    public int solution(int n, int[][] costs) {
+        int answer = 0;
+        parent = new int[n];
+
+        for (int i = 0; i < n; i++)
+            parent[i] = i;
+
+        Arrays.sort(costs, Comparator.comparingInt(o1 -> o1[2]));
+
+        for (int[] cost : costs) {
+            int x = cost[0];
+            int y = cost[1];
+
+            if (findParent(x) != findParent(y)) {
+                unionParent(x, y);
+                answer += cost[2];
+            }
+        }
+
+        return answer;
+    }
+}
