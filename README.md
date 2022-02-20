@@ -1,2 +1,2 @@
-# Algorithm
-Let's solve algorithm problems
+# Algorithms
+Problems and solutions
